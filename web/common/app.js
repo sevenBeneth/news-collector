@@ -37,7 +37,8 @@ const initLogin = function() {
 }
 
 /**
- * 登录
+ * 登录（演示级：统一跳转到手机号 + 密码登录页）
+ * 原模板的微信小程序登录 / 公众号登录已随后端能力一并移除
  */
 const login = function() {
 	/*清除登录缓存*/
@@ -46,9 +47,7 @@ const login = function() {
 	uni.removeStorageSync('currentUser');
 	uni.removeStorageSync('platform');
 
-	console.log('跳转登录')
-
-	/*储存当前页*/
+	/*储存当前页，登录成功后返回*/
 	let pages = getCurrentPages();
 	let currentPage = pages[pages.length - 1];
 	let originUrl = '/' + currentPage.route;
@@ -63,160 +62,11 @@ const login = function() {
 	uni.setStorageSync('loginOriginUrl', originUrl); //存储跳转前URL
 	console.log('loginOriginUrl:' + originUrl)
 
-	// #ifdef MP-WEIXIN
 	uni.navigateTo({
-		url: '/pages/wechat/miniAppLogin'
-	})
-	// #endif
-
-	// #ifndef MP-WEIXIN
-	if (getPlatform() == 'wechatMP') {
-		initMPLogin(); //公众号登录
-	} else {
-		uni.navigateTo({
-			url: '/pages/common/login'
-		})
-	}
-	// #endif
-}
-
-/*微信小程序登录初始化*/
-const wechatAppLoginInit = function() {
-	/*检测是否授权*/
-	uni.getSetting({
-		success: function(res) {
-			/* 已经授权直接登录*/
-			if (res.authSetting['scope.userInfo']) {
-				wechatAppLogin(false); //登录
-			} else {
-				uni.navigateTo({
-					url: '/pages/wechat/miniAppLogin'
-				})
-			}
-		}
-	});
-}
-
-/*微信小程序登录*/
-const wechatAppLogin = function(isBack = false) {
-	/*登录提示*/
-	uni.showLoading({
-		title: "正在登录",
-		mask: true
-	});
-
-	/*微信登录*/
-	uni.login({
-		provider: 'weixin',
-		success: loginResult => {
-			let code = loginResult.code;
-			console.log(loginResult);
-			/*获取用户信息*/
-			uni.getUserInfo({
-				success: result => {
-					/*获取分享id*/
-					let share_user_id = uni.getStorageSync('share_user_id');
-					share_user_id = share_user_id > 0 ? share_user_id : 0;
-
-					/*登录验证*/
-					request({
-						url: api.wechat.miniAppLogin,
-						data: {
-							share_user_id: share_user_id,
-							code: code,
-							user_info: result.rawData,
-							encrypted_data: result.encryptedData,
-							iv: result.iv,
-							signature: result.signature
-						},
-						method: 'POST',
-						dataType: 'json',
-						success: res => {
-							console.log(res)
-							if (res.code == 0) {
-								alert('登录成功', 'success');
-
-								/*更新登录状态,保存用户数据*/
-								let userInfo = res.data;
-								uni.setStorageSync("isLogin", '1');
-								uni.setStorageSync("accessToken", userInfo.token);
-								uni.setStorageSync('currentUser', userInfo);
-								uni.setStorageSync('platform', 'wechatMiniApp');
-								uni.setStorageSync('source', 'login');
-								if (userInfo.is_exist_user == 0) {
-									uni.setStorageSync('register', 1);
-								}
-
-								/*switchTab刷新*/
-								let originUrl = uni.getStorageSync('loginOriginUrl');
-								if (originUrl) {
-									let originUrlRoute = originUrl.split('?');
-									console.log('originUrlRoute:' + originUrlRoute)
-									if (tabBarUrl.includes(originUrlRoute[0])) {
-										uni.switchTab({
-											url: originUrlRoute[0]
-										})
-									} else {
-										uni.navigateBack();
-									}
-								} else {
-									/*登录后跳转*/
-									if (isBack) {
-										uni.navigateBack();
-									}
-								}
-							} else {
-								alert(res.msg, 'warning');
-							}
-						}
-					});
-				},
-				fail: result => {
-					uni.hideLoading();
-				}
-			});
-		}
-	});
-}
-
-/*微信公众号登录*/
-const initMPLogin = function() {
-	/*获取登录验证url*/
-	let url = location.href.split('/pages/');
-	let loginUrl = '';
-	if (url.length > 1) {
-		loginUrl = url[0] + '/pages/wechat/mpLogin';
-	} else {
-		loginUrl = url[0] + 'pages/wechat/mpLogin';
-	}
-
-	/*获取分享id*/
-	let share_user_id = uni.getStorageSync('share_user_id');
-	share_user_id = share_user_id > 0 ? share_user_id : 0;
-
-	/*拼装url*/
-	location.href = api.wechat.mpLogin + '?url=' + encodeURIComponent(loginUrl) + '&share_user_id=' + share_user_id;
-}
-
-/*检查是否有操作权限*/
-const checkAuth = function() {
-	request({
-		url: api.user.checkAuth,
-		data: {},
-		method: 'POST',
-		dataType: 'json',
-		success: res => {
-			console.log('has auth')
-		}
-	});
-}
-
-/*绑定手机号码*/
-const bindMobile = function() {
-	uni.navigateTo({
-		url: '/pages/user/bindMobile'
+		url: '/pages/common/login'
 	})
 }
+
 
 /*获取来源url*/
 const getSourcePage = function() {
@@ -259,8 +109,6 @@ const request = function(req) {
 		success: function(res) {
 			if (res.data.code == '1000') {
 				login(); //登录
-			} else if (res.data.code == '1003') {
-				bindMobile(); //绑定手机号码
 			} else {
 				if (req.success) {
 					console.log(res)
@@ -318,8 +166,6 @@ const uploadFile = function(req) {
 		success: (res) => {
 			if (res.data.code == '1000') {
 				login(); //登录
-			} else if (res.data.code == '1003') {
-				bindMobile(); //绑定手机号码
 			} else {
 				if (req.success) {
 					req.success(JSON.parse(res.data));
@@ -485,8 +331,6 @@ export default {
 	isLogin,
 	initLogin,
 	login,
-	wechatAppLogin,
-	initMPLogin,
 	request,
 	uploadFile,
 	alert,
@@ -494,7 +338,5 @@ export default {
 	isWechat,
 	getNaviBarHeight,
 	getPlatform,
-	getSourcePage,
-	checkAuth,
-	bindMobile
+	getSourcePage
 };

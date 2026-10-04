@@ -29,7 +29,7 @@ Vue.prototype.$initLogin = function() {
 };
 
 /*初始化页面标题*/
-Vue.prototype.$initPageTitle = function(pageTitle = '团节社成都') {
+Vue.prototype.$initPageTitle = function(pageTitle = '芜湖市科技创新新闻收集平台') {
 	// #ifdef H5
 	document.title = pageTitle;
 	// #endif

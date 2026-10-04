@@ -2,22 +2,6 @@
 	<view class="wrap">
 		<view class="content">
 			<view class="list">
-				<navigator class="item" url="profile" hover-class="none">
-					<view class="name">
-						<iconfont type="profile-o"></iconfont>
-						<text>用户资料</text>
-					</view>
-					<view class="go"><iconfont type="go"></iconfont></view>
-				</navigator>
-				<!-- #ifndef MP-WEIXIN  -->
-				<navigator class="item" url="password" hover-class="none">
-					<view class="name">
-						<iconfont type="password-o"></iconfont>
-						<text>密码修改</text>
-					</view>
-					<view class="go"><iconfont type="go"></iconfont></view>
-				</navigator>
-				<!-- #endif -->
 				<view class="item" @tap="bindLogout">
 					<view class="name">
 						<iconfont type="logout-o"></iconfont>
@@ -65,36 +49,22 @@ export default {
 							title: '退出登录中…'
 						});
 						that.$app.request({
-							url: this.$api.user.logout,
+							url: that.$api.user.logout,
 							method: 'POST',
 							dataType: 'json',
 							success: res => {
 								console.log(res);
 								if (res.code == 0) {
-									that.logout(); //退出登录
-									// #ifdef MP
-									uni.switchTab({
-										url: '/pages/article/index'
-									});
-									// #endif
-									// #ifndef MP
-									// #ifdef H5
-									uni.navigateTo({
-										url: '/pages/user/index'
-									});
-									// #endif
-									// #ifndef H5
-									uni.switchTab({
-										url: '/pages/user/index'
-									});
-									// #endif
-									// #endif
+									/*清除本地 isLogin / accessToken / currentUser，并重置登录状态*/
+									that.logout();
+									uni.removeStorageSync('platform');
+									/*跳转登录页*/
+									that.$alert('退出登录成功', 'success', '/pages/common/login');
 								} else {
 									that.$alert(res.msg);
 								}
 							},
 							complete: res => {
-								uni.stopPullDownRefresh();
 								uni.hideLoading();
 							}
 						});

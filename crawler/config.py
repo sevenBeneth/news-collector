@@ -86,60 +86,58 @@ LOG_DIR = os.path.join(CRAWLER_DIR, "logs")
 # 四、后端不可用时的离线兜底源（让 --dry-run 在没启动后端时也能跑）
 # --------------------------------------------------------------------------
 # 正常流程下源列表来自 GET /api/ingest/sources；这里只是"后端未启动"时的
-# 应急名单，id 与 sql/init.sql 里的采集源保持一致。
+# 应急名单，用于离线验证 4 类适配器。id / 名称 / 分类码与后端初始化数据
+# （芜湖 9 个采集源）保持一致，避免离线结果和联调结果对不上。
 FALLBACK_SOURCES = [
     {
         "id": 1, "name": "芜湖市科技局-通知公告", "adapter": "wuhu_kjj_list",
         "list_url": "https://kjj.wuhu.gov.cn/gg/tzgg/index.html",
-        "default_category_code": "notice", "keyword_filter": "科技,创新,科创,研发,高新技术",
-        "max_pages": 1,
+        "default_category_code": "notice", "keyword_filter": None, "max_pages": 1,
     },
     {
         "id": 2, "name": "芜湖市科技局-工作动态", "adapter": "wuhu_kjj_list",
         "list_url": "https://kjj.wuhu.gov.cn/gg/gzdt/index.html",
-        "default_category_code": "news", "keyword_filter": "科技,创新,科创,研发,高新技术",
-        "max_pages": 1,
+        "default_category_code": "policy", "keyword_filter": None, "max_pages": 1,
     },
     {
         "id": 3, "name": "芜湖市科技局-科技要闻", "adapter": "wuhu_kjj_list",
         "list_url": "https://kjj.wuhu.gov.cn/gg/kjyw/index.html",
-        "default_category_code": "news", "keyword_filter": "科技,创新,科创,研发,高新技术",
-        "max_pages": 1,
+        "default_category_code": "learn", "keyword_filter": None, "max_pages": 1,
     },
     {
         "id": 4, "name": "芜湖市科技局-县区科技", "adapter": "wuhu_kjj_list",
         "list_url": "https://kjj.wuhu.gov.cn/gg/xqkj/index.html",
-        "default_category_code": "news", "keyword_filter": "科技,创新,科创,研发,高新技术",
-        "max_pages": 1,
+        "default_category_code": "park", "keyword_filter": None, "max_pages": 1,
     },
     {
-        "id": 5, "name": "芜湖市人民政府-RSS", "adapter": "wuhu_gov_rss",
+        "id": 5, "name": "芜湖市政府-新闻RSS", "adapter": "wuhu_gov_rss",
         "list_url": "https://www.wuhu.gov.cn/rss/rss.xml?siteId=6787231",
-        "default_category_code": "news", "keyword_filter": "科技,创新,科创,研发,数字经济,智算",
-        "max_pages": 1,
+        "default_category_code": "policy", "keyword_filter": None, "max_pages": 1,
     },
     {
-        "id": 6, "name": "芜湖市政府-政务要闻", "adapter": "wuhu_gov_list",
+        "id": 6, "name": "芜湖市政府-芜湖要闻", "adapter": "wuhu_gov_list",
         "list_url": "https://www.wuhu.gov.cn/xwzx/zwyw/index.html",
-        "default_category_code": "news", "keyword_filter": "科技,创新,科创,研发,数字经济,智算",
-        "max_pages": 1,
+        "default_category_code": "policy", "keyword_filter": None, "max_pages": 2,
     },
     {
         "id": 7, "name": "芜湖市政府-部门动态", "adapter": "wuhu_gov_list",
         "list_url": "https://www.wuhu.gov.cn/xwzx/bmdt/index.html",
-        "default_category_code": "news", "keyword_filter": "科技,创新,科创,研发,数字经济,智算",
-        "max_pages": 1,
+        "default_category_code": "enterprise", "keyword_filter": None, "max_pages": 2,
     },
     {
         "id": 8, "name": "芜湖新闻网-要闻", "adapter": "wuhunews_list",
         "list_url": "https://www.wuhunews.cn/yaowen/",
-        "default_category_code": "news", "keyword_filter": "科技,创新,科创,研发,智算,数字经济",
-        "max_pages": 2,
+        "default_category_code": "enterprise",
+        "keyword_filter": ("科技,创新,研发,高新技术,人工智能,机器人,新能源,航空,实验室,"
+                           "成果转化,专利,数字经济,鸠兹科创湾,智能,产业"),
+        "max_pages": 3,
     },
     {
-        "id": 9, "name": "芜湖新闻网-党建中心", "adapter": "wuhunews_list",
+        "id": 9, "name": "芜湖新闻网-大江资讯", "adapter": "wuhunews_list",
         "list_url": "https://www.wuhunews.cn/djzx/",
-        "default_category_code": "news", "keyword_filter": "科技,创新,科创,研发,智算,数字经济",
-        "max_pages": 1,
+        "default_category_code": "enterprise",
+        "keyword_filter": ("科技,创新,研发,高新技术,人工智能,机器人,新能源,航空,实验室,"
+                           "成果转化,专利,数字经济,鸠兹科创湾,智能,产业"),
+        "max_pages": 3,
     },
 ]

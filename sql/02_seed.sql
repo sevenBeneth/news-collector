@@ -30,13 +30,13 @@ INSERT INTO `crawl_source`
   (`id`,`name`,`adapter`,`list_url`,`default_category_code`,`keyword_filter`,`max_pages`,`enable`,`sort`,`remark`) VALUES
   (1,'芜湖市科技局-通知公告','wuhu_kjj_list','https://kjj.wuhu.gov.cn/gg/tzgg/index.html','notice',NULL,1,1,1,'政策申报/公示类，时效性强'),
   (2,'芜湖市科技局-工作动态','wuhu_kjj_list','https://kjj.wuhu.gov.cn/gg/gzdt/index.html','policy',NULL,1,1,2,'科技局日常工作'),
-  (3,'芜湖市科技局-科技要闻','wuhu_kjj_list','https://kjj.wuhu.gov.cn/gg/kjyw/index.html','learn',NULL,1,1,3,'多为省级以上媒体转载'),
+  (3,'芜湖市科技局-科技要闻','wuhu_kjj_list','https://kjj.wuhu.gov.cn/gg/kjyw/index.html','learn','科技创新,科创,高新技术,人工智能,机器人,成果转化,专利,实验室,数字经济,鸠兹科创湾,科技,研发,算力',1,1,3,'多为省级以上媒体转载，需关键词过滤'),
   (4,'芜湖市科技局-县区科技','wuhu_kjj_list','https://kjj.wuhu.gov.cn/gg/xqkj/index.html','park',NULL,1,1,4,'各区县科技动态'),
-  (5,'芜湖市政府-新闻RSS','wuhu_gov_rss','https://www.wuhu.gov.cn/rss/rss.xml?siteId=6787231','policy',NULL,1,1,5,'官方RSS，自带摘要，最稳定'),
-  (6,'芜湖市政府-芜湖要闻','wuhu_gov_list','https://www.wuhu.gov.cn/xwzx/zwyw/index.html','policy',NULL,2,1,6,'市级要闻'),
-  (7,'芜湖市政府-部门动态','wuhu_gov_list','https://www.wuhu.gov.cn/xwzx/bmdt/index.html','enterprise',NULL,2,1,7,'部门动态，科技/产业相关多'),
-  (8,'芜湖新闻网-要闻','wuhunews_list','https://www.wuhunews.cn/yaowen/','enterprise','科技,创新,研发,高新技术,人工智能,机器人,新能源,航空,实验室,成果转化,专利,数字经济,鸠兹科创湾,智能,产业',3,1,8,'本地权威媒体'),
-  (9,'芜湖新闻网-大江资讯','wuhunews_list','https://www.wuhunews.cn/djzx/','enterprise','科技,创新,研发,高新技术,人工智能,机器人,新能源,航空,实验室,成果转化,专利,数字经济,鸠兹科创湾,智能,产业',3,1,9,'本地资讯')
+  (5,'芜湖市政府-新闻RSS','wuhu_gov_rss','https://www.wuhu.gov.cn/rss/rss.xml?siteId=6787231','policy','科技创新,科创,高新技术,人工智能,机器人,成果转化,专利,实验室,数字经济,鸠兹科创湾,科技,研发,算力',1,1,5,'官方RSS，自带摘要，最稳定；仅保留科技类'),
+  (6,'芜湖市政府-芜湖要闻','wuhu_gov_list','https://www.wuhu.gov.cn/xwzx/zwyw/index.html','policy','科技创新,科创,高新技术,人工智能,机器人,成果转化,专利,实验室,数字经济,鸠兹科创湾,科技,研发,算力',1,1,6,'分页为JS渲染，仅抓第1页；仅保留科技类'),
+  (7,'芜湖市政府-部门动态','wuhu_gov_list','https://www.wuhu.gov.cn/xwzx/bmdt/index.html','enterprise','科技创新,科创,高新技术,人工智能,机器人,成果转化,专利,实验室,数字经济,鸠兹科创湾,科技,研发,算力',1,1,7,'分页为JS渲染，仅抓第1页；仅保留科技类'),
+  (8,'芜湖新闻网-要闻','wuhunews_list','https://www.wuhunews.cn/yaowen/','enterprise','科技创新,科创,高新技术,人工智能,机器人,成果转化,专利,实验室,数字经济,鸠兹科创湾,科技,研发,算力',3,1,8,'支持 ?pp= 翻页；关键词过滤'),
+  (9,'芜湖新闻网-大江资讯','wuhunews_list','https://www.wuhunews.cn/djzx/','enterprise','科技创新,科创,高新技术,人工智能,机器人,成果转化,专利,实验室,数字经济,鸠兹科创湾,科技,研发,算力',1,1,9,'该栏目 ?pp= 翻页失效，仅抓第1页')
 ON DUPLICATE KEY UPDATE
   `name`=VALUES(`name`), `adapter`=VALUES(`adapter`), `list_url`=VALUES(`list_url`),
   `default_category_code`=VALUES(`default_category_code`), `keyword_filter`=VALUES(`keyword_filter`),

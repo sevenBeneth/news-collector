@@ -603,7 +603,6 @@
 		margin-top: 2rpx;
 
 		.item {
-			display: block;
 			padding: 40rpx 24rpx 0 24rpx;
 
 			.info {

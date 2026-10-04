@@ -124,17 +124,18 @@ export default {
 			title: '刷新中'
 		});
 		this.page_index = 1;
+		this.hasMoreData = false;
 		this.getCommentDetail();
 	},
 	onReachBottom: function() {
-		console.log(this.hasMoreData);
+		/*上拉加载更多回复：用更大的 page_index 再次请求 commentDetail*/
 		if (this.hasMoreData) {
-			this.getReply();
+			this.getCommentDetail(true);
 		}
 	},
 	methods: {
-		/*获取评论*/
-		getCommentDetail() {
+		/*获取评论详情（isAppend = true 表示上拉加载，把新一页的回复追加到列表）*/
+		getCommentDetail(isAppend = false) {
 			this.$app.request({
 				url: this.$api.article.commentDetail,
 				data: {
@@ -146,17 +147,25 @@ export default {
 				dataType: 'json',
 				success: res => {
 					if (res.code == 0) {
-						this.info = res.data;
-						this.showPageLoading = false;
-						if (res.data.reply.page > this.page_index) {
-							this.hasMoreData = true;
+						/*接口已返回回复分页 reply: {count, page, list}*/
+						let reply = res.data.reply || { count: 0, page: 0, list: [] };
+						if (isAppend) {
+							/*上拉加载：把新一页的回复追加到已有列表*/
+							this.info.reply.list = this.info.reply.list.concat(reply.list);
+							this.info.reply.count = reply.count;
+							this.info.reply.page = reply.page;
 						} else {
-							this.hasMoreData = false;
+							/*首屏：直接用 commentDetail 返回的回复列表*/
+							this.info = res.data;
+							this.info.reply = reply;
+							this.showPageLoading = false;
 						}
+						/*page 为总页数，大于当前请求的页码说明还有下一页*/
+						this.hasMoreData = reply.page > this.page_index;
 						this.page_index += 1;
 
 						/*初始化回复*/
-						if (this.operate == 'reply') {
+						if (!isAppend && this.operate == 'reply') {
 							this.showAddReplyBg(true);
 						}
 					} else {
@@ -275,39 +284,6 @@ export default {
 			setTimeout(() => {
 				this.addReplyFocus = status;
 			}, 200);
-		},
-
-		/*获取回复*/
-		getReply() {
-			this.$app.request({
-				url: this.$api.article.commentReply,
-				data: {
-					comment_id: this.id,
-					page_index: this.page_index,
-					page_size: this.page_size
-				},
-				method: 'POST',
-				dataType: 'json',
-				success: res => {
-					if (res.code == 0) {
-						console.log(this.info.reply);
-						this.info.reply.list = this.info.reply.list.concat(res.data.list);
-						this.info.reply.count = res.data.count;
-						if (res.data.page > this.page_index) {
-							this.hasMoreData = true;
-						} else {
-							this.hasMoreData = false;
-						}
-						this.page_index += 1;
-					} else {
-						this.$alert(res.msg);
-					}
-				},
-				complete: res => {
-					uni.stopPullDownRefresh();
-					uni.hideLoading();
-				}
-			});
 		}
 	}
 };

@@ -4,10 +4,12 @@
 			<view class="info">
 				<view class="text">
 					<view class="title">{{ item.title }}</view>
+					<!-- AI 摘要预览：列表页即可速读 -->
+					<view class="ai-summary" v-if="item.ai_summary">{{ item.ai_summary }}</view>
 					<view class="other">
 						<view class="left">
-							<view class="source" v-if="item.source">{{ item.source }}</view>
-							<view class="time">{{ item.create_time }}</view>
+							<view class="source" v-if="item.origin">{{ item.origin }}</view>
+							<view class="time">{{ item.publish_time }}</view>
 						</view>
 						<view class="right" v-if="item.comment_count > 0">
 							<image src="/static/images/icon_comment.png"></image>
@@ -15,7 +17,7 @@
 						</view>
 						<view class="right view" v-else>
 							<image src="/static/images/icon_view.png"></image>
-							<text>{{ item.read }}</text>
+							<text>{{ item.read_count }}</text>
 						</view>
 					</view>
 				</view>
@@ -70,6 +72,18 @@ export default {
 					overflow: hidden;
 					height: 76rpx;
 					margin-bottom: 8rpx;
+				}
+				.ai-summary {
+					font-size: 26rpx;
+					color: #666;
+					line-height: 1.4;
+					margin-bottom: 10rpx;
+					display: -webkit-box;
+					text-overflow: ellipsis;
+					word-break: break-all;
+					-webkit-line-clamp: 2;
+					-webkit-box-orient: vertical;
+					overflow: hidden;
 				}
 				.other {
 					flex-grow: 1;

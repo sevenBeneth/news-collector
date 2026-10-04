@@ -28,6 +28,22 @@ class BackendError(Exception):
     """后端接口返回业务错误或网络不可达。"""
 
 
+def _brief_error(exc: Exception) -> str:
+    """把 requests 冗长的异常链压成一句人话，便于控制台/日志阅读。"""
+    text = str(exc)
+    # ConnectionError 的原文本形如：
+    #   HTTPConnectionPool(host=..., port=...): Max retries exceeded with url: ...
+    #   (Caused by NewConnectionError('<...>: Failed to establish a new connection: [WinError 10061] ...'))
+    # 只保留 "Max retries exceeded" 之前的部分和最后一条根因，信息足够定位问题。
+    marker = text.find(": Max retries exceeded")
+    if marker > 0:
+        root = text.rsplit(":", 1)[-1].strip()
+        text = text[:marker] + "；根因: " + root
+    if len(text) > 140:
+        text = text[:140] + "…"
+    return "%s: %s" % (type(exc).__name__, text)
+
+
 class IngestStore:
     """采集端 API 客户端（单例式使用，内部维护一个 requests.Session）。"""
 
@@ -59,8 +75,7 @@ class IngestStore:
             response = self.session.request(method, self._url(path), timeout=self.timeout, **kwargs)
         except requests.RequestException as exc:
             self.available = False
-            raise BackendError("无法连接后端 %s（%s: %s）"
-                               % (self.base_url, type(exc).__name__, exc)) from exc
+            raise BackendError("无法连接后端 %s（%s）" % (self.base_url, _brief_error(exc))) from exc
 
         if response.status_code >= 400:
             raise BackendError("后端返回 HTTP %s: %s" % (response.status_code, path))
