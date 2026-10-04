@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuhu.news.mapper.CommentMapper">
+
+    <sql id="commentColumns">
+        c.id, c.news_id, c.user_id, c.content, c.pid, c.reply_count, c.like_count, c.create_time,
+        u.nickname, u.avatar_url
+    </sql>
+
+    <sql id="likeColumn">
+        <if test="userId != null">
+            , (SELECT COUNT(1) FROM user_action ua
+            WHERE ua.user_id = #{userId} AND ua.target_type = 3 AND ua.target_id = c.id) AS is_like
+        </if>
+    </sql>
+
+    <!-- 一级评论 -->
+    <select id="selectTopComments" resultType="com.wuhu.news.vo.CommentVO">
+        SELECT
+        <include refid="commentColumns"/>
+        <include refid="likeColumn"/>
+        FROM comment c
+        LEFT JOIN app_user u ON u.id = c.user_id
+        WHERE c.news_id = #{newsId} AND c.pid IS NULL AND c.enable = 1
+        ORDER BY c.create_time ASC, c.id ASC
+    </select>
+
+    <!-- 单条评论 -->
+    <select id="selectCommentById" resultType="com.wuhu.news.vo.CommentVO">
+        SELECT
+        <include refid="commentColumns"/>
+        <include refid="likeColumn"/>
+        FROM comment c
+        LEFT JOIN app_user u ON u.id = c.user_id
+        WHERE c.id = #{id} AND c.enable = 1
+    </select>
+
+    <!-- 回复列表 -->
+    <select id="selectReplies" resultType="com.wuhu.news.vo.CommentVO">
+        SELECT
+        <include refid="commentColumns"/>
+        <include refid="likeColumn"/>
+        , u1.nickname AS parent_nickname
+        FROM comment c
+        LEFT JOIN app_user u ON u.id = c.user_id
+        LEFT JOIN comment c1 ON c1.id = c.pid
+        LEFT JOIN app_user u1 ON u1.id = c1.user_id
+        WHERE c.pid = #{pid} AND c.enable = 1
+        ORDER BY c.create_time ASC, c.id ASC
+    </select>
+
+</mapper>

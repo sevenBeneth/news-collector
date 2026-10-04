@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuhu.news.mapper.NewsMapper">
+
+    <sql id="itemColumns">
+        n.id, n.title, n.photo_url, n.origin, n.source_url, n.publish_time,
+        n.ai_summary, n.ai_keywords, n.read_count, n.like_count, n.comment_count, n.category_id
+    </sql>
+
+    <!-- 首页 / 频道 / 搜索列表（仅已发布） -->
+    <select id="selectIndex" resultType="com.wuhu.news.vo.NewsItemVO">
+        SELECT
+        <include refid="itemColumns"/>
+        , c.name AS category_name
+        FROM news n
+        LEFT JOIN news_category c ON c.id = n.category_id
+        WHERE n.status = 1
+        <if test="category_id != null">
+            AND n.category_id = #{category_id}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (n.title LIKE CONCAT('%', #{keyword}, '%')
+            OR n.ai_keywords LIKE CONCAT('%', #{keyword}, '%')
+            OR n.origin LIKE CONCAT('%', #{keyword}, '%')
+            OR n.content LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        ORDER BY n.publish_time DESC, n.id DESC
+    </select>
+
+    <!-- 新闻详情 -->
+    <select id="selectDetail" resultType="com.wuhu.news.vo.NewsDetailVO">
+        SELECT
+        n.id, n.title, n.content, n.photo_url, n.origin, n.source_url, n.publish_time,
+        n.read_count, n.like_count, n.comment_count,
+        n.ai_summary, n.ai_keywords, n.ai_status, n.ai_model,
+        n.category_id, c.name AS category_name
+        <if test="userId != null">
+            , (SELECT COUNT(1) FROM user_action ua WHERE ua.user_id = #{userId} AND ua.target_type = 2 AND ua.target_id = n.id) AS is_like
+            , (SELECT COUNT(1) FROM user_action ua WHERE ua.user_id = #{userId} AND ua.target_type = 1 AND ua.target_id = n.id) AS is_favorite
+        </if>
+        FROM news n
+        LEFT JOIN news_category c ON c.id = n.category_id
+        WHERE n.id = #{id}
+    </select>
+
+    <!-- 启用中的轮播 -->
+    <select id="selectEnabledBanners" resultType="com.wuhu.news.entity.Banner">
+        SELECT id, title, image_url, link_url, news_id, sort, enable
+        FROM banner
+        WHERE enable = 1
+        ORDER BY sort ASC, id DESC
+    </select>
+
+    <!-- 我的收藏 -->
+    <select id="selectFavoriteList" resultType="com.wuhu.news.vo.NewsItemVO">
+        SELECT
+        <include refid="itemColumns"/>
+        , c.name AS category_name
+        , ua.create_time AS favorite_time
+        FROM user_action ua
+        INNER JOIN news n ON n.id = ua.target_id AND n.status = 1
+        LEFT JOIN news_category c ON c.id = n.category_id
+        WHERE ua.user_id = #{userId} AND ua.target_type = 1
+        ORDER BY ua.create_time DESC
+    </select>
+
+    <!-- 管理端列表 -->
+    <select id="selectAdminList" resultType="com.wuhu.news.entity.News">
+        SELECT
+        n.id, n.title, n.origin, n.source_url, n.publish_time, n.crawl_time, n.category_id,
+        n.ai_summary, n.ai_keywords, n.ai_status, n.ai_model, n.ai_tokens,
+        n.status, n.slider, n.read_count, n.like_count, n.comment_count,
+        c.name AS category_name
+        FROM news n
+        LEFT JOIN news_category c ON c.id = n.category_id
+        <where>
+            <if test="status != null"> AND n.status = #{status} </if>
+            <if test="categoryId != null"> AND n.category_id = #{categoryId} </if>
+            <if test="aiStatus != null"> AND n.ai_status = #{aiStatus} </if>
+            <if test="keyword != null and keyword != ''">
+                AND (n.title LIKE CONCAT('%', #{keyword}, '%') OR n.origin LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY n.id DESC
+    </select>
+
+</mapper>

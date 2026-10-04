@@ -1,0 +1,80 @@
+==========================================================================================
+URL: https://www.wuhu.gov.cn/rss/rss.xml?siteId=6787231 | HTTP: 200 | hdr: utf-8 | apparent: utf-8
+meta charset: None | len: 13567
+---- RSS 前 1500 字符 ----
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>芜湖市人民政府</title>
+        <link>https://www.wuhu.gov.cn/index.html</link>
+        <copyright><![CDATA[ Copyright https://www.wuhu.gov.cn Rights Reserved ]]></copyright>
+                    <item>
+                <title>
+                    <![CDATA[ 陈东调研数字经济发展工作 ]]>
+                </title>
+                <link>https://www.wuhu.gov.cn/xwzx/zwyw/41350150.html</link>
+                <author></author>
+                <pubDate>2026-10-04 01:39:11.0</pubDate>
+                <description>
+                <![CDATA[ 10月2日至3日，市委副书记、代市长陈东赴江北新区、经开区，专题调研数字经济发展工作，并主持召开数字经济重大项目谋划推进会议。市领导朱子、曹小明、潘枫分别参加。
+在推进会上，陈东认真听取市发展改革委、市数据资源管理局等单位关于数字经济重大项目谋划推进情况汇报。他指出，要树牢全局观念，坚持系统谋划、精准... ]]>
+                </description>
+            </item>
+                    <item>
+                <title>
+                    <![CDATA[ University talent showcase finale caps Yangtze cultural exchange week ]]>
+                </title>
+                <link>https://www.wuhu.gov.cn/WuhuEnglish/LocalNews/41350141.html</link>
+                <author></author>
+                <pubDate>2026-10-03 21:59:05.0</pubDate>
+                <description>
+                <![CDATA[ By Wu Anya | dajiangnews.cn
+
+
+At 6 p.m. on September 27, the grand finale of the 2026 Wuhu University Students Talent Showcase — titled "Youth Riding the Waves, Stars Shining over the Yangtze" — was held at Jiuzi Square as a key event of the 4th Y
+---- RSS 用 lxml-xml 解析 ----
+items: 15
+    title => 陈东调研数字经济发展工作
+    link => https://www.wuhu.gov.cn/xwzx/zwyw/41350150.html
+    pubDate => 2026-10-04 01:39:11.0
+    description => 10月2日至3日，市委副书记、代市长陈东赴江北新区、经开区，专题调研数字经济发展工作，并主持召开数字经济重大项目谋划推进会议。市领导朱子、曹小明、潘枫分别参加。
+在推进会上，陈东认真听取市发展改革委、市数据资源管理局等单位关于数字经济重大项目谋划推进情况汇报。他指出，要树牢全局观念，坚持系统谋划、精
+    author => 
+    source => None
+    ---
+    title => University talent showcase finale caps Yangtze cultural exchange week
+    link => https://www.wuhu.gov.cn/WuhuEnglish/LocalNews/41350141.html
+    pubDate => 2026-10-03 21:59:05.0
+    description => By Wu Anya | dajiangnews.cn
+
+
+At 6 p.m. on September 27, the grand finale of the 2026 Wuhu University Students Talent Showcase — titled "Youth Riding 
+    author => 
+    source => None
+    ---
+    title => 徐志“四不两直”检查督导安全生产工作并看望慰问值班值守人员
+    link => https://www.wuhu.gov.cn/xwzx/zwyw/41350129.html
+    pubDate => 2026-10-03 15:47:53.0
+    description => 10月2日，市委书记徐志“四不两直”赴湾沚区检查督导安全生产、应急值守、道路交通安全管理等工作，看望慰问坚守一线的工作人员。市领导朱子、后名文参加。
+       在一家混凝土企业，徐志深入厂房细致检查，强调要时刻绷紧安全生产这根弦，坚决杜绝麻痹松懈思想，加大安全设备投入，强化安全生产人员管理，严格
+    author => 
+    source => None
+    ---
+==========================================================================================
+URL: https://kjj.wuhu.gov.cn/gg/tzgg/index.html | HTTP: 200 | hdr: ISO-8859-1 | apparent: utf-8
+meta charset: b'utf-8' | len: 26058
+---- kjj 列表 li 结构 ----
+  li.class= None | a.href= javascript:void(0) | a.title= None
+  li.text= 我的收藏
+  li.html= <li><a href="javascript:void(0)"><span class="j-favorites" data-setting="{siteId:6787910}">我的收藏</span></a></li>
+==========================================================================================
+URL: https://kjj.wuhu.gov.cn/gg/tzgg/8959644.html | HTTP: 200 | hdr: ISO-8859-1 | apparent: utf-8
+meta charset: b'utf-8' | len: 23208
+---- kjj 详情 ----
+h1: 关于转发《关于进一步做好2026年度首批省科技创新券兑付相关工作的提示》的通知
+  含发布日期节点: div ['newsinfo'] None => 发布日期：2026-09-29 14:46 来源：芜湖市科技局 作者：芜湖市科技局 浏览次数： 字号：[ 大 中 小 ] 背景颜色：
+  含发布日期节点: span None None => 发布日期：2026-09-29 14:46
+候选正文容器:
+所有 class 含 content/artical/zoom/editor 的 div:
+  div.class= wenzhang wza-region_content id= color_printsssss textlen= 666 p_count= 12 sample= 关于转发《关于进一步做好2026年度首批省科技创新券兑付相关工作的提示》的通知 发布日期：2026-09-29 14:46 来源：芜湖市科技局 作者：芜湖市科技局 浏览次数： 字号：[ 大 中 小 ]
+  div.class= newscontnet minh500 j-fontContent id= None textlen= 556 p_count= 12 sample= 各县市区、开发区科技管理部门， 各在芜高校， 各 有关单位 ： 现将省 科技 厅《关于进一步做好 2026 年度首批省科技创新券兑付相关工作的提示》转发给你们，并结合我市实际，就 进一步 做好科技创新

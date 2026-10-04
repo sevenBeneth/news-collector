@@ -1,45 +1,42 @@
-// let apiRoot = 'http://tcyhw.free.idcfengye.com/api/';
+// ============================================================
+// 接口地址配置
+// 后端：Spring Boot（默认 http://localhost:9533）
+// 说明：H5 演示时前端由 HBuilderX dev-server 提供（端口可能是 8080/8081），
+//      后端已对 localhost 任意端口放行跨域。
+// 仅保留后端已实现的接口，未实现的（短信验证码/文件上传/微信登录等）已移除，
+// 避免出现 404 与 undefined 地址。
+// ============================================================
 let apiRoot = 'http://localhost:9533/api/';
-// let apiRoot = 'https://miniapp.tcyhw.top/v3/api/';
+
 let api = {
-	common: {
-		aboutUs: apiRoot + 'aboutUs',
-		verify: apiRoot + "verify",
-	},
+	// 首页轮播
+	banner: apiRoot + 'banner',
+	// 频道
+	getCategory: apiRoot + 'getCategory',
+	// 新闻
 	article: {
 		index: apiRoot + 'getIndex',
 		category: apiRoot + 'getCategory',
 		detail: apiRoot + 'detail',
 		comment: apiRoot + 'comment',
-		commentDetail: apiRoot + "commentDetail",
-		commentReply: apiRoot + "commentReply",
+		commentDetail: apiRoot + 'commentDetail',
+		commentLike: apiRoot + 'commentLike',
 		addComment: apiRoot + 'addComment',
 		addReply: apiRoot + 'addReply',
-		like: apiRoot + "like",
-		commentLike: apiRoot + "commentLike",
-		commentReplyLike: apiRoot + "commentReplyLike",
-		favorite: apiRoot + "favorite",
-		favoriteList: apiRoot + "favoriteList",
+		like: apiRoot + 'like',
+		favorite: apiRoot + 'favorite',
+		favoriteList: apiRoot + 'favoriteList',
 	},
+	// 用户
 	user: {
-		login: apiRoot + "login",
-		register: apiRoot + "register",
-		index: apiRoot + "userIndex",
-		userInfo: apiRoot + "userInfo",
-		updateAvatar: apiRoot + "updateAvatar",
-		upload: apiRoot + "upload",
-		setting: apiRoot + "setting",
-		updatePassword: apiRoot + "updatePassword",
-		forgot: apiRoot + "forgot",
-		updatePasswordByMobile: apiRoot + "updatePasswordByMobile",
-		feedback: apiRoot + "feedback",
-		logout: apiRoot + "logout",
-	},
-	wechat: {
-		miniAppLogin: apiRoot + 'miniAppLogin',
-		mpLogin: apiRoot + 'mpLogin',
-		devLogin: apiRoot + 'devLogin',
-		mpConfig: apiRoot + 'mpConfig',
+		login: apiRoot + 'login',
+		register: apiRoot + 'register',
+		index: apiRoot + 'userIndex',
+		userInfo: apiRoot + 'userInfo',
+		updatePassword: apiRoot + 'updatePassword',
+		feedback: apiRoot + 'feedback',
+		logout: apiRoot + 'logout',
 	},
 };
+
 export default api;

@@ -4,12 +4,12 @@
 			"style": {
 				"titleNView": false,
 				"navigationStyle": "custom",
-				"enablePullDownRefresh": false, // 不开启下拉刷新, 默认就是false
-				"disableScroll": true, // 禁止滚动, 解决scroll-view在Android小程序卡顿的问题
+				"enablePullDownRefresh": false,
+				"disableScroll": true,
 				"app-plus": {
-					"bounce": "none" // 取消iOS回弹,避免和下拉刷新冲突 (小程序无法取消, 点此查看H5端的取消方法... )
+					"bounce": "none"
 				},
-				"navigationBarTitleText": "团节社成都"
+				"navigationBarTitleText": "芜湖科技创新"
 			}
 		},
 		{
@@ -17,12 +17,12 @@
 			"style": {
 				"titleNView": false,
 				"navigationStyle": "custom",
-				"enablePullDownRefresh": false, // 不开启下拉刷新, 默认就是false
-				"disableScroll": true, // 禁止滚动, 解决scroll-view在Android小程序卡顿的问题
+				"enablePullDownRefresh": false,
+				"disableScroll": true,
 				"app-plus": {
-					"bounce": "none" // 取消iOS回弹,避免和下拉刷新冲突 (小程序无法取消, 点此查看H5端的取消方法... )
+					"bounce": "none"
 				},
-				"navigationBarTitleText": "团节社成都"
+				"navigationBarTitleText": "芜湖科技创新"
 			}
 		},
 		//#ifdef H5
@@ -31,12 +31,12 @@
 			"style": {
 				"titleNView": false,
 				"navigationStyle": "custom",
-				"enablePullDownRefresh": false, // 不开启下拉刷新, 默认就是false
-				"disableScroll": true, // 禁止滚动, 解决scroll-view在Android小程序卡顿的问题
+				"enablePullDownRefresh": false,
+				"disableScroll": true,
 				"app-plus": {
-					"bounce": "none" // 取消iOS回弹,避免和下拉刷新冲突 (小程序无法取消, 点此查看H5端的取消方法... )
+					"bounce": "none"
 				},
-				"navigationBarTitleText": "团节社成都"
+				"navigationBarTitleText": "芜湖科技创新"
 			}
 		},
 		//#endif
@@ -51,7 +51,7 @@
 		{
 			"path": "pages/article/detail",
 			"style": {
-				"navigationBarTitleText": "详情",
+				"navigationBarTitleText": "新闻详情",
 				"enablePullDownRefresh": true
 			}
 		},
@@ -73,7 +73,6 @@
 			"path": "pages/user/index",
 			"style": {
 				// #ifdef H5
-				//"titleNView": false,
 				"navigationBarBackgroundColor": "#FFFFFF",
 				"navigationBarTextStyle": "black",
 				"navigationBarTitleText": "用户中心",
@@ -88,10 +87,10 @@
 		{
 			"path": "pages/user/favorites",
 			"style": {
-				"enablePullDownRefresh": false, // 不开启下拉刷新, 默认就是false
-				"disableScroll": true, // 禁止滚动, 解决scroll-view在Android小程序卡顿的问题
+				"enablePullDownRefresh": false,
+				"disableScroll": true,
 				"app-plus": {
-					"bounce": "none" // 取消iOS回弹,避免和下拉刷新冲突 (小程序无法取消, 点此查看H5端的取消方法... )
+					"bounce": "none"
 				},
 				"navigationBarTitleText": "我的收藏"
 			}
@@ -99,10 +98,10 @@
 		{
 			"path": "pages/user/favorite",
 			"style": {
-				"enablePullDownRefresh": false, // 不开启下拉刷新, 默认就是false
-				"disableScroll": true, // 禁止滚动, 解决scroll-view在Android小程序卡顿的问题
+				"enablePullDownRefresh": false,
+				"disableScroll": true,
 				"app-plus": {
-					"bounce": "none" // 取消iOS回弹,避免和下拉刷新冲突 (小程序无法取消, 点此查看H5端的取消方法... )
+					"bounce": "none"
 				},
 				"navigationBarTitleText": "我的收藏"
 			}
@@ -134,27 +133,13 @@
 		{
 			"path": "pages/common/login",
 			"style": {
-				"navigationBarTitleText": "用户登录",
-				"app-plus": {
-					// "titleNView": false,
-					// "navigationStyle": "custom"
-				}
-			}
-		},
-		{
-			"path": "pages/wechat/miniAppLogin",
-			"style": {
-				"navigationBarTitleText": "微信登录"
+				"navigationBarTitleText": "用户登录"
 			}
 		},
 		{
 			"path": "pages/common/register",
 			"style": {
-				"navigationBarTitleText": "注册",
-				"app-plus": {
-					// "titleNView": false,
-					// "navigationStyle": "custom"
-				}
+				"navigationBarTitleText": "注册账号"
 			}
 		},
 		{
@@ -164,46 +149,40 @@
 			}
 		},
 		{
-			"path": "pages/common/forget",
-			"style": {
-				"navigationBarTitleText": "忘记密码？请重置密码"
-			}
-		},
-		{
 			"path": "pages/common/about",
 			"style": {
-				"navigationBarTitleText": "关于团节社成都"
+				"navigationBarTitleText": "关于本平台"
 			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "团节社成都",
-		"navigationBarBackgroundColor": "#ffd100",
+		"navigationBarTitleText": "芜湖市科技创新新闻收集平台",
+		"navigationBarBackgroundColor": "#c62828",
 		"backgroundColor": "#F8F8F8"
 	},
-	"condition": { //模式配置，仅开发期间生效
-		"current": 2, //当前激活的模式（list 的索引项）
+	"condition": {
+		"current": 1,
 		"list": [{
-				"name": "搜索",
-				"path": "pages/article/search",
-				"query": ""
-			},
-			{
 				"name": "首页",
 				"path": "pages/article/index",
 				"query": ""
 			},
 			{
+				"name": "搜索",
+				"path": "pages/article/search",
+				"query": ""
+			},
+			{
 				"name": "详情",
 				"path": "pages/article/detail",
-				"query": "id=19"
+				"query": "id=1"
 			}
 		]
 	},
 	"tabBar": {
 		"color": "#000000",
-		"selectedColor": "#000000",
+		"selectedColor": "#c62828",
 		"backgroundColor": "#FFFFFF",
 		"list": [
 			// #ifndef H5
@@ -211,13 +190,13 @@
 				"pagePath": "pages/article/index",
 				"iconPath": "static/images/nav/icon_home.png",
 				"selectedIconPath": "static/images/nav/icon_home_hover.png",
-				"text": "主页"
+				"text": "科创资讯"
 			},
 			{
 				"pagePath": "pages/user/favorites",
 				"iconPath": "static/images/nav/icon_favorite.png",
 				"selectedIconPath": "static/images/nav/icon_favorite_hover.png",
-				"text": "收藏"
+				"text": "我的收藏"
 			},
 			{
 				"pagePath": "pages/user/index",
