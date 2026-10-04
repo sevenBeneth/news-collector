@@ -106,6 +106,23 @@ mysql -uroot -p123456 --default-character-set=utf8mb4 -e "source D:/news-collect
 
 ### 2. 后端
 
+**先创建本地私有配置**（仓库中不含任何密钥）：
+
+```bash
+# api-server/src/main/resources/application-local.yml
+spring:
+  datasource:
+    username: root
+    password: 你的MySQL密码
+ai:
+  deepseek:
+    key: sk-你的DeepSeek密钥
+```
+
+> `application.yml` 已配置 `spring.profiles.active=local`，会自动加载该文件；
+> 也可不改文件，改用环境变量 `DB_USER` / `DB_PASSWORD` / `DEEPSEEK_API_KEY`。
+> `application-local.yml` 已在 `.gitignore` 中，不会被提交。
+
 ```bash
 cd D:/news-collector/api-server
 mvn -s ../tools/mvn-settings.xml -DskipTests clean package

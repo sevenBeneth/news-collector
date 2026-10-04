@@ -6,11 +6,14 @@ server:
       force: true
 
 spring:
+  # 本地私有配置（数据库口令、DeepSeek Key）放在 application-local.yml，该文件已列入 .gitignore，不会提交
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
   # ---------- 数据库 ----------
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/news_collector?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/news_collector?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${DB_USER:}
+    password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
   # ---------- JSON 序列化 ----------
   jackson:
@@ -56,8 +59,8 @@ ai:
   deepseek:
     enabled: true
     base-url: https://api.deepseek.com
-    # 优先读取环境变量 DEEPSEEK_API_KEY，便于部署时替换
-    key: ${DEEPSEEK_API_KEY:REMOVED-BY-SECURITY-SCRUB}
+    # 通过环境变量 DEEPSEEK_API_KEY 或 application-local.yml 提供，仓库中不保存密钥
+    key: ${DEEPSEEK_API_KEY:}
     model: deepseek-chat
     connect-timeout: 10000
     read-timeout: 90000
