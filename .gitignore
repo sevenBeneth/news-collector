@@ -1,4 +1,6 @@
-﻿# ---- 构建产物 ----
+# ---- 构建产物 ----
+target/
+out/
 api-server/target/
 web/unpackage/
 dist/
