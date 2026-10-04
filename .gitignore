@@ -1,0 +1,26 @@
+﻿# ---- 构建产物 ----
+api-server/target/
+web/unpackage/
+dist/
+
+# ---- IDE ----
+.idea/
+.hbuilderx/
+*.iml
+.vscode/
+
+# ---- 日志与临时文件 ----
+*.log
+logs/
+*.tmp
+*.bak
+
+# ---- Python ----
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ---- 本地覆盖配置（真实密钥请放这里，不要提交）----
+application-local.yml
+.env
