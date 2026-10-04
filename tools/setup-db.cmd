@@ -5,9 +5,12 @@ rem ============================================================
 rem 初始化数据库（幂等，可重复执行）
 rem   01_schema.sql 建表   02_seed.sql 频道/采集源/演示数据
 rem 需要 mysql 客户端在 PATH 中，或修改下面的 MYSQL 变量
+rem 数据库口令：优先读环境变量 DB_PASSWORD，未设置则交互输入（不写入脚本）
 rem ============================================================
 set MYSQL="C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe"
-set DBARGS=--host=127.0.0.1 --port=3306 --user=root  --default-character-set=utf8mb4
+if "%DB_PASSWORD%"=="" set /p DB_PASSWORD=请输入 MySQL 密码:
+set MYSQL_PWD=%DB_PASSWORD%
+set DBARGS=--host=127.0.0.1 --port=3306 --user=root --default-character-set=utf8mb4
 
 echo [1/2] 建表 ...
 %MYSQL% %DBARGS% --execute="source D:/news-collector/sql/01_schema.sql"
