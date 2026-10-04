@@ -5,15 +5,23 @@
 				<view class="title">{{ info.title }}</view>
 				<view class="info">
 					<view class="source-date">
-						<text class="source" v-if="info.source_url" @tap="copyText(info.source_url)">{{ info.source }}</text>
-						<text class="source" v-else>{{ info.source }}</text>
-						<text class="date hidden">{{ info.create_time }}</text>
+						<text class="source" v-if="info.origin">{{ info.origin }}</text>
+						<text class="date">{{ info.publish_time }}</text>
 					</view>
-					<view class="read">阅读 {{ info.read }}</view>
+					<view class="read">阅读 {{ info.read_count }}</view>
+				</view>
+				<!-- 查看原文 -->
+				<view class="origin" v-if="hasSourceUrl" @tap="viewOrigin()">
+					<text class="origin-text">查看原文</text>
+					<text class="origin-arrow">></text>
+				</view>
+				<!-- AI 摘要卡片 -->
+				<view class="ai-summary">
+					<aiSummaryCard :summary="info.ai_summary" :keywords="info.ai_keywords" :model="info.ai_model" />
 				</view>
 				<view class="desc"><parser :html="info.content"></parser></view>
-				<view class="declaration" v-if="info.source_url">
-					本文转载至{{ info.source }}，
+				<view class="declaration" v-if="hasSourceUrl">
+					本文转载至{{ info.origin }}，
 					<text @tap="copyText(info.source_url)">点此可查看原文链接。</text>
 					如有侵权，请联系我们，我们将在最短的时间内处理。
 				</view>
@@ -163,6 +171,7 @@ import pageLoading from '@/components/loading/pageLoading.vue';
 import iconfont from '@/components/iconfont/iconfont.vue';
 import loading from '@/components/loading/loading.vue';
 import uniPopup from '@/components/uni-popup/uni-popup.vue';
+import aiSummaryCard from '@/components/ai-summary-card/ai-summary-card.vue';
 import util from '@/common/util.js';
 import wechatMP from '@/common/sdk/wechatMP.js';
 export default {
@@ -171,7 +180,8 @@ export default {
 		pageLoading,
 		loading,
 		iconfont,
-		uniPopup
+		uniPopup,
+		aiSummaryCard
 	},
 	data() {
 		return {
@@ -193,6 +203,13 @@ export default {
 			showH5Share: false,
 			showBrowserShareTip: false
 		};
+	},
+	computed: {
+		/*是否存在可跳转的原文链接*/
+		hasSourceUrl() {
+			let url = this.info.source_url;
+			return !!url && String(url).indexOf('http') == 0;
+		}
 	},
 	onShow(e) {
 		this.$initPageTitle(); //初始化页面标题
@@ -551,6 +568,25 @@ export default {
 			}
 		},
 
+		/*查看原文：H5 新窗口打开，小程序端复制链接后提示*/
+		viewOrigin() {
+			let url = this.info.source_url;
+			if (!url || String(url).indexOf('http') != 0) {
+				return;
+			}
+			// #ifdef H5
+			window.open(url);
+			// #endif
+			// #ifndef H5
+			uni.setClipboardData({
+				data: url,
+				success: res => {
+					this.$alert('原文链接已复制，可在浏览器中打开', 'success');
+				}
+			});
+			// #endif
+		},
+
 		/*复制*/
 		copyText(text) {
 			uni.setClipboardData({
@@ -592,6 +628,26 @@ export default {
 		.read {
 			color: #999;
 		}
+	}
+	/*查看原文入口*/
+	.origin {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		margin-top: 20rpx;
+		.origin-text {
+			color: #c62828;
+			font-size: 28rpx;
+		}
+		.origin-arrow {
+			margin-left: 8rpx;
+			color: #c62828;
+			font-size: 28rpx;
+		}
+	}
+	/*AI 摘要卡片*/
+	.ai-summary {
+		margin-top: 30rpx;
 	}
 	.desc {
 		margin-top: 50rpx;

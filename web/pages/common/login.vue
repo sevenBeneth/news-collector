@@ -15,8 +15,6 @@
 			</view>
 			<view class="button" hover-class="button-hover" @tap="bindLogin"><text>登录</text></view>
 			<view class="other">
-				<navigator url="forget" open-type="navigate">忘记密码</navigator>
-				<text>|</text>
 				<navigator url="register" open-type="navigate">注册账户</navigator>
 			</view>
 		</view>

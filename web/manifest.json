@@ -1,7 +1,7 @@
 {
-    "name" : "tuanjieshe",
+    "name" : "芜湖科技创新新闻",
     "appid" : "__UNI__6D981A7",
-    "description" : "/h5/",
+    "description" : "芜湖本地科技创新资讯聚合与AI摘要",
     "versionName" : "1.0.0",
     "versionCode" : "100",
     "transformPx" : false,
@@ -108,7 +108,7 @@
         "appid" : ""
     },
     "h5" : {
-        "title" : "团节社成都站_美团团节社成都_成都团节社成都_成都首码_团节社成都_招募_邀请_达人",
+        "title" : "芜湖市科技创新新闻收集平台",
         "domain" : "修改为自己的域名",
         "router" : {
             "base" : "./",

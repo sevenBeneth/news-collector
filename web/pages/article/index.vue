@@ -62,17 +62,36 @@
 				</view>
 			</view>
 			<scroller @init="initScroller" @down="refreshData" @up="getData" :up="optUp" @scroll="navFloatShow(scroller)" :fixed="false">
-				<swiper v-if="slider.length > 0" class="swiper" :indicator-dots="true" :autoplay="true" :circular="true">
-					<swiper-item v-for="(item, index) in slider" :key="index">
-						<navigator class="item" hover-class="none" :url="'/pages/article/detail?id=' + item.id">
-							<image :lazy-load="true" :src="item.photo_url" mode="aspectFill"></image>
-							<view class="title">
-								<text>{{ item.title }}</text>
+				<!-- 轮播图（数据来自 /api/banner） -->
+				<bannerSwiper :list="banner" height="320rpx" @click="bannerClick" />
+				<!-- 新闻列表 -->
+				<view class="list" v-if="list.length > 0">
+					<navigator :url="'/pages/article/detail?id=' + item.id" class="item" v-for="(item, index) in list" :key="index" hover-class="none">
+						<view class="info">
+							<view class="text">
+								<view class="title">{{ item.title }}</view>
+								<!-- AI 摘要前 40 字 -->
+								<view class="ai-summary" v-if="item.ai_summary">{{ summaryText(item.ai_summary) }}</view>
+								<view class="other">
+									<view class="left">
+										<view class="source" v-if="item.origin">{{ item.origin }}</view>
+										<view class="time">{{ item.publish_time }}</view>
+									</view>
+									<view class="right" v-if="item.comment_count > 0">
+										<image src="/static/images/icon_comment.png"></image>
+										<text>{{ item.comment_count }}</text>
+									</view>
+									<view class="right view" v-else>
+										<image src="/static/images/icon_view.png"></image>
+										<text>{{ item.read_count }}</text>
+									</view>
+								</view>
 							</view>
-						</navigator>
-					</swiper-item>
-				</swiper>
-				<articleList :list="list" />
+							<view class="photo"><image :src="item.photo_url" mode="aspectFill"></image></view>
+						</view>
+						<view class="line"></view>
+					</navigator>
+				</view>
 			</scroller>
 		</view>
 		<pageLoading v-if="showPageLoading"></pageLoading>
@@ -81,13 +100,13 @@
 
 <script>
 	import scroller from '@/components/scroller/scroller.vue';
-	import articleList from '@/components/article/list.vue';
+	import bannerSwiper from '@/components/banner-swiper/banner-swiper.vue';
 	import pageLoading from '@/components/loading/pageLoading.vue';
 	import iconfont from '@/components/iconfont/iconfont.vue';
 	import util from '@/common/util.js';
 	export default {
 		components: {
-			articleList,
+			bannerSwiper,
 			pageLoading,
 			scroller,
 			iconfont
@@ -108,10 +127,9 @@
 				category_id: 1,
 				category_index: 0,
 				scroll_category_id: 'scroll_category_id_0',
-				currentSliderIndex: 0,
 				category: [],
 				showMenu: false,
-				slider: [],
+				banner: [],
 				list: [],
 				showNoData: false,
 				showPageLoading: true,
@@ -151,6 +169,7 @@
 			}
 			// #endif
 			this.getCategory();
+			this.getBanner(); //获取首页轮播
 		},
 		onPullDownRefresh() {
 			uni.showLoading({
@@ -169,14 +188,13 @@
 				uni.showLoading({
 					title: '刷新中'
 				});
+				this.getBanner(); //刷新轮播
 				this.scroller.resetUpScroll();
 			},
 
 			/*加载数据*/
 			loadData() {
-				this.slider = [];
 				this.list = [];
-				this.currentSliderIndex = 0;
 				this.scroller.resetUpScroll();
 			},
 
@@ -202,6 +220,20 @@
 				});
 			},
 
+			/*获取轮播数据*/
+			getBanner() {
+				this.$app.request({
+					url: this.$api.banner,
+					method: 'POST',
+					dataType: 'json',
+					success: res => {
+						if (res.code == 0 && res.data) {
+							this.banner = res.data;
+						}
+					}
+				});
+			},
+
 			/*获取数据*/
 			getData() {
 				this.$app.request({
@@ -218,8 +250,8 @@
 							if (this.scroller.num == 1) {
 								this.list = [];
 							}
-							if (this.slider.length == 0) {
-								this.slider = res.data.slider;
+							if (this.banner.length == 0 && res.data.slider) {
+								this.banner = res.data.slider; //banner 接口为空时兜底使用列表接口的 slider
 							}
 							this.list = this.list.concat(res.data.list);
 							this.scroller.endByPage(res.data.list.length, res.data.page);
@@ -256,9 +288,42 @@
 				// #endif
 			},
 
-			/*广告切换*/
-			sliderChange: function(e) {
-				this.currentSliderIndex = e.detail.current;
+			/*轮播点击：有关联新闻跳详情，否则打开外链*/
+			bannerClick(item) {
+				if (!item) {
+					return;
+				}
+				if (item.news_id > 0) {
+					uni.navigateTo({
+						url: '/pages/article/detail?id=' + item.news_id
+					});
+					return;
+				}
+				if (item.link_url) {
+					// #ifdef H5
+					window.open(item.link_url);
+					// #endif
+					// #ifndef H5
+					uni.setClipboardData({
+						data: item.link_url,
+						success: res => {
+							this.$alert('链接已复制', 'success');
+						}
+					});
+					// #endif
+				}
+			},
+
+			/*截取 AI 摘要前 40 字*/
+			summaryText(text) {
+				if (!text) {
+					return '';
+				}
+				text = String(text);
+				if (text.length > 40) {
+					return text.substr(0, 40) + '...';
+				}
+				return text;
 			},
 
 			/*滚动时导航栏浮动*/
@@ -533,56 +598,126 @@
 		height: 100%;
 	}
 
-	/*幻灯片广告 */
-	.swiper {
-		height: 350rpx;
-		margin: 14rpx 24rpx 0;
-
-		image {
-			height: 350rpx;
-			width: 100%;
-			border-radius: 15rpx;
-			//box-shadow: 0 0 12px #dddee1;
-		}
-
-		.current {
-			width: 97%;
-			height: 350rpx;
-			margin: 1.5% 1.5%;
-			transition: all 0.2s ease-in 0s;
-		}
+	/*文章列表*/
+	.list {
+		margin-top: 2rpx;
 
 		.item {
-			position: relative;
+			display: block;
+			padding: 40rpx 24rpx 0 24rpx;
 
-			.title {
-				position: absolute;
-				left: 0;
-				bottom: 0;
+			.info {
 				display: flex;
-				justify-content: center;
-				width: 100%;
+				flex-direction: row;
+				justify-content: space-between;
+				padding-bottom: 4rpx;
 
-				text {
-					margin: 7% 6%;
+				.text {
+					flex-grow: 1;
+					flex-shrink: 1;
 					display: flex;
-					align-items: center;
-					//background-image: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
-					//background-image: linear-gradient(90deg,rgba(255, 181, 19,.8),rgba(255, 181, 19,.2));
-					color: #ffffff;
-					display: -webkit-box;
-					text-overflow: ellipsis;
-					word-break: break-all;
-					-webkit-line-clamp: 2;
-					-webkit-box-orient: vertical;
-					overflow: hidden;
-					font-size: 32rpx;
-					font-weight: bold;
-					padding: 7rpx 10rpx;
-					max-width: 610rpx;
-					line-height: 1.3;
-					border-radius: 5rpx;
+					flex-direction: column;
+					margin-right: 40rpx;
+
+					.title {
+						flex-grow: 1;
+						flex-shrink: 1;
+						font-size: 30rpx;
+						line-height: 1.2;
+						display: -webkit-box;
+						text-overflow: ellipsis;
+						word-break: break-all;
+						-webkit-line-clamp: 2;
+						-webkit-box-orient: vertical;
+						overflow: hidden;
+						margin-bottom: 8rpx;
+					}
+
+					/*AI 摘要前 40 字*/
+					.ai-summary {
+						margin-bottom: 8rpx;
+						color: #888888;
+						font-size: 26rpx;
+						line-height: 1.4;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						overflow: hidden;
+					}
+
+					.other {
+						flex-grow: 1;
+						flex-shrink: 1;
+						display: flex;
+						align-items: center;
+						font-size: 28rpx;
+						color: #999;
+						line-height: normal;
+
+						.left {
+							display: flex;
+							flex-grow: 1;
+							flex-shrink: 1;
+
+							.source {
+								display: -webkit-box;
+								text-overflow: ellipsis;
+								word-break: break-all;
+								-webkit-line-clamp: 1;
+								-webkit-box-orient: vertical;
+								overflow: hidden;
+								width: 140rpx;
+								margin-right: 16rpx;
+							}
+						}
+
+						.right {
+							display: flex;
+							flex-direction: row;
+							justify-content: center;
+							align-items: center;
+							flex-grow: 0;
+							flex-shrink: 0;
+							margin-right: 5rpx;
+
+							image {
+								flex-grow: 1;
+								flex-shrink: 1;
+								width: 28rpx;
+								height: 28rpx;
+								margin-right: 12rpx;
+							}
+
+							text {
+								flex-grow: 1;
+								flex-shrink: 1;
+								margin-top: -6rpx;
+							}
+						}
+
+						.view {
+							image {
+								width: 40rpx;
+								height: 40rpx;
+								margin-right: 5rpx;
+							}
+						}
+					}
 				}
+
+				.photo {
+					image {
+						height: 170rpx;
+						width: 222rpx;
+						border-radius: 10rpx;
+					}
+				}
+			}
+
+			.line {
+				width: 100%;
+				height: 1rpx;
+				margin-top: 22rpx;
+				background: #e8e8e8;
 			}
 		}
 	}

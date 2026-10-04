@@ -1,0 +1,14 @@
+# crawler/requirements.txt
+# 采集器运行依赖（Python 3.11.9 实测通过）
+#
+# 安装：
+#   pip install -r requirements.txt
+#
+# 说明：站点均为服务端直出 HTML（2026-10 实测确认），
+#       因此不需要 Selenium；lxml 作为 BeautifulSoup 的解析后端，
+#       比内置 html.parser 更快也更宽容。
+
+requests>=2.28,<3
+beautifulsoup4>=4.11,<5
+lxml>=4.9
+tenacity>=8.2

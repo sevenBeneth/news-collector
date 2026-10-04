@@ -1,0 +1,24 @@
+﻿============================================================================================
+芜湖市科技创新新闻采集器  |  2026-10-05 02:03:12
+后端: http://127.0.0.1:9533  |  日志文件: D:\news-collector\crawler\logs\run-20261005-020312.log
+============================================================================================
+模式: 正式采集（抓取 + 推送后端）
+✗ 后端不可用（http://127.0.0.1:9533）：抓取会继续，但数据无法入库；若只想验证抓取请加 --dry-run
+✗ 无法从后端获取采集源：后端已被标记为不可用，跳过请求 /api/ingest/sources
+  请确认后端已启动（http://127.0.0.1:9533）后重试；离线预览可执行 python run.py --list-sources 前先启动服务，或查看 crawler/config.py 里的 FALLBACK_SOURCES
+
+采集源列表（9 个）
+------------------------------------------------------------------------------------------------------------
+ID   名称                     适配器              页数     列表地址
+------------------------------------------------------------------------------------------------------------
+1    芜湖市科技局-通知公告            wuhu_kjj_list    1      https://kjj.wuhu.gov.cn/gg/tzgg/index.html
+2    芜湖市科技局-工作动态            wuhu_kjj_list    1      https://kjj.wuhu.gov.cn/gg/gzdt/index.html
+3    芜湖市科技局-科技要闻            wuhu_kjj_list    1      https://kjj.wuhu.gov.cn/gg/kjyw/index.html
+4    芜湖市科技局-县区科技            wuhu_kjj_list    1      https://kjj.wuhu.gov.cn/gg/xqkj/index.html
+5    芜湖市人民政府-RSS            wuhu_gov_rss     1      https://www.wuhu.gov.cn/rss/rss.xml?siteId=6787231
+6    芜湖市政府-政务要闻             wuhu_gov_list    1      https://www.wuhu.gov.cn/xwzx/zwyw/index.html
+7    芜湖市政府-部门动态             wuhu_gov_list    1      https://www.wuhu.gov.cn/xwzx/bmdt/index.html
+8    芜湖新闻网-要闻               wuhunews_list    2      https://www.wuhunews.cn/yaowen/
+9    芜湖新闻网-党建中心             wuhunews_list    1      https://www.wuhunews.cn/djzx/
+------------------------------------------------------------------------------------------------------------
+  以上为 crawler/config.py 中的本地兜底源定义（离线参考）

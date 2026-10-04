@@ -42,7 +42,9 @@ class IngestStore:
             "Accept": "application/json",
             "User-Agent": config.USER_AGENT,
         })
-        self.available = True   # 一旦探测到后端不可用就置 False，后续请求直接跳过
+        # 后端探活状态：只作为提示信息，不会阻止后续请求 ——
+        # 后端重启或暂时抽风后，下一次请求仍会正常发出（可用性由 retry/异常处理保证）。
+        self.available = True
 
     # ------------------------------------------------------------------
     # 内部工具
@@ -52,9 +54,7 @@ class IngestStore:
         return self.base_url + path
 
     def _request(self, method: str, path: str, **kwargs):
-        """统一请求包装：捕获网络异常，转成 BackendError 并标记不可用。"""
-        if not self.available:
-            raise BackendError("后端已被标记为不可用，跳过请求 %s" % path)
+        """统一请求包装：捕获网络异常，转成 BackendError。"""
         try:
             response = self.session.request(method, self._url(path), timeout=self.timeout, **kwargs)
         except requests.RequestException as exc:

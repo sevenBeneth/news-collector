@@ -18,12 +18,9 @@
 					<iconfont type="pwd"></iconfont>
 					<input class="input" v-model="password" type="text" maxlength="32" placeholder="请输入密码" password="true" />
 				</view>
-				<view class="item verify-item">
-					<view class="verfiy-code-icon">
-						<iconfont type="verify-code"></iconfont>
-					</view>
-					<input class="input" v-model="verify_code" type="text" maxlength="4" placeholder="请输入验证码" />
-					<view class="verify-btn" @tap="getVerifyCode">{{verify_text}}</view>
+				<view class="item">
+					<iconfont type="pwd"></iconfont>
+					<input class="input" v-model="confirmPassword" type="text" maxlength="32" placeholder="请再次输入密码" password="true" />
 				</view>
 			</view>
 			<view class="protocol">
@@ -49,10 +46,9 @@
 </template>
 
 <script>
-	import { mapState, mapMutations } from 'vuex';
+	import { mapMutations } from 'vuex';
 	import iconfont from '@/components/iconfont/iconfont.vue'
 	import validator from '@/common/validator'
-	var that, js;
 	export default {
 		components: {
 			iconfont
@@ -60,35 +56,14 @@
 		onShow() {
 			this.$initPageTitle();//初始化页面标题
 		},
-		onLoad() {
-			that = this;
-		},
-		onUnload() {
-			clearInterval(js)
-			this.second = 0;
-		},
 		data() {
 			return {
 				mobile: '',
 				nickname: '',
 				password: '',
-				verify_code: '',
-				agree: '1',
-				second: 0
+				confirmPassword: '',
+				agree: '1'
 			};
-		},
-		computed: {
-			verify_text() {
-				if (this.second == 0) {
-					return '获取验证码';
-				} else {
-					if (this.second < 10) {
-						return '0' + this.second + '秒后重新获取';
-					} else {
-						return this.second + '秒后重新获取';
-					}
-				}
-			}
 		},
 		methods: {
 			...mapMutations(['login']),
@@ -101,37 +76,6 @@
 				}
 			},
 
-			/*获取验证码*/
-			getVerifyCode() {
-				if (this.second > 0) {
-					return;
-				}
-				if (!validator.checkMobile(this.mobile)) {
-					return;
-				}
-				this.second = 60;
-				js = setInterval(function() {
-					that.second--;
-					if (that.second == 0) {
-						clearInterval(js)
-					}
-				}, 1000)
-				this.$app.request({
-					url: this.$api.common.verify,
-					data: {
-						mobile: this.mobile,
-						type: 'normal'
-					},
-					method: 'POST',
-					dataType: 'json',
-					success: (res) => {
-						if (res.code != 0) {
-							this.$alert(res.msg);
-						}
-					}
-				});
-			},
-
 			/*注册*/
 			register() {
 				if (!validator.checkMobile(this.mobile)) {
@@ -140,7 +84,11 @@
 					return;
 				} else if (!validator.checkPassword(this.password)) {
 					return;
-				} else if (!validator.checkVerifyCode(this.verify_code)) {
+				} else if (this.confirmPassword == '') {
+					this.$alert('请再次输入密码');
+					return;
+				} else if (this.confirmPassword != this.password) {
+					this.$alert('两次输入的密码不一致');
 					return;
 				}
 				uni.showLoading({
@@ -151,8 +99,7 @@
 					data: {
 						mobile: this.mobile,
 						nickname: this.nickname,
-						password: this.password,
-						verify_code: this.verify_code
+						password: this.password
 					},
 					method: 'POST',
 					dataType: 'json',
@@ -161,15 +108,23 @@
 						if (res.code == 0) {
 							uni.hideLoading();
 							this.$alert('注册成功');
-							
-							/*更新登录状态,保存用户数据*/
+
+							/*更新登录状态,保存token与用户数据*/
 							this.login(res.data);
-							
+
 							/*跳转首页*/
 							setTimeout(() => {
+								// #ifndef H5
 								uni.switchTab({
-									url: '/pages/user/index'
-								})
+									url: '/pages/article/index'
+								});
+								// #endif
+
+								// #ifdef H5
+								uni.navigateTo({
+									url: '/pages/article/index'
+								});
+								// #endif
 							}, 1500)
 						} else {
 							this.$alert(res.msg);
@@ -219,32 +174,11 @@
 					font-size: 40rpx;
 				}
 
-				.verfiy-code-icon {
-					.icon {
-						font-size: 52rpx;
-						margin-right: -6rpx;
-						margin-left: -4rpx;
-					}
-				}
-
 				.input {
 					flex: 1;
 					text-align: left;
 					font-size: 30rpx;
 					margin-left: 16rpx;
-				}
-			}
-
-			.verify-item {
-				position: relative;
-
-				.verify-btn {
-					position: absolute;
-					top: 22rpx;
-					right: 10rpx;
-					color: #ffd100;
-					font-size: 30rpx;
-					z-index: 9999;
 				}
 			}
 		}

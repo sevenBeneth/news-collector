@@ -433,18 +433,21 @@ def main(argv: list[str] | None = None) -> int:
 
     # ---- 后端连接 ----
     store = IngestStore()
-    backend_alive = False
-    if not args.dry_run:
-        backend_alive = store.ping()
-        if backend_alive:
-            logger.info(_c("✔ 后端连接正常", "green"))
-        else:
-            logger.error(_c("✗ 后端不可用（%s）：抓取会继续，但数据无法入库；"
-                            "若只想验证抓取请加 --dry-run" % config.BACKEND_BASE_URL, "red"))
+    backend_alive = store.ping()
+    if backend_alive:
+        logger.info(_c("✔ 后端连接正常（%s）" % config.BACKEND_BASE_URL, "green"))
     else:
-        backend_alive = store.ping()
+        message = ("后端不可用（%s）：%s" % (
+            config.BACKEND_BASE_URL,
+            "--dry-run 模式下不影响抓取，将改用本地兜底源定义"
+            if args.dry_run else
+            "抓取会继续，但数据无法入库；若只想验证抓取请加 --dry-run"))
+        if args.dry_run:
+            logger.warning(_c("⚠ " + message, "yellow"))
+        else:
+            logger.error(_c("✗ " + message, "red"))
     if args.dry_run and not backend_alive:
-        logger.info(_c("提示: 后端未启动，本次使用本地兜底源定义（--dry-run 模式可独立工作）", "yellow"))
+        logger.info(_c("提示: 后端未启动时 --dry-run 仍可独立验证抓取与解析", "yellow"))
 
     # ---- 取源 ----
     source_scope = source_ids or None
