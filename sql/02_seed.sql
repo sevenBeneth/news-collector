@@ -51,7 +51,7 @@ VALUES
   ('芜湖"鸠兹科创湾"开园 打造长三角场景创新高地',
    'https://example.local/demo/1',
    '芜湖市"鸠兹科创湾"正式开园，聚焦场景创新与成果转化，首批入驻一批创新平台与科技型企业。芜湖将依托该平台推动新技术新产品在本地的先行先试，形成"场景牵引—技术验证—产业落地"的闭环。',
-   'https://kjj.wuhu.gov.cn/_res/images/gai.png',
+   '/static/images/banner/banner-1.png',
    '芜湖市科技局','2026-09-20 09:00:00',
    (SELECT id FROM news_category WHERE code='platform' LIMIT 1),
    '芜湖"鸠兹科创湾"开园，定位场景创新与成果转化，通过"场景牵引—技术验证—产业落地"闭环推动新技术先行先试。',
@@ -59,7 +59,7 @@ VALUES
   ('芜湖市启动2026年度高新技术企业认定申报工作',
    'https://example.local/demo/2',
    '芜湖市科技局发布通知，启动2026年度全市高新技术企业认定申报工作，明确申报条件、材料清单与时间节点，并要求各县市区科技管理部门做好辅导服务。',
-   'https://kjj.wuhu.gov.cn/_res/images/gai.png',
+   '/static/images/banner/banner-2.png',
    '芜湖市科技局','2026-05-01 10:00:00',
    (SELECT id FROM news_category WHERE code='policy' LIMIT 1),
    '芜湖市启动2026年度高新技术企业认定申报，明确申报条件、材料与时间节点，并要求县区做好企业辅导。',
@@ -67,7 +67,7 @@ VALUES
   ('芜湖造航空发动机亮相2026世界制造业大会',
    'https://example.local/demo/3',
    '在2026世界制造业大会上，芜湖企业展出的航空发动机产品受到关注，体现了芜湖在航空装备与高端制造领域的产业积累与创新能力的持续提升。',
-   'https://kjj.wuhu.gov.cn/_res/images/gai.png',
+   '/static/images/banner/banner-3.png',
    '芜湖新闻网','2026-10-01 08:00:00',
    (SELECT id FROM news_category WHERE code='enterprise' LIMIT 1),
    '芜湖航空发动机产品亮相2026世界制造业大会，反映本地航空装备与高端制造领域的产业积累与创新能力。',
@@ -78,10 +78,10 @@ ON DUPLICATE KEY UPDATE `title`=VALUES(`title`);
 -- 4. Banner（关联演示新闻，后续可在管理页替换为真实图片）
 -- ------------------------------------------------------------
 INSERT INTO `banner` (`id`,`title`,`image_url`,`news_id`,`sort`,`enable`) VALUES
-  (1,'鸠兹科创湾开园',          'https://kjj.wuhu.gov.cn/_res/images/gai.png',
+  (1,'鸠兹科创湾开园',          '/static/images/banner/banner-1.png',
       (SELECT id FROM news WHERE source_url='https://example.local/demo/1' LIMIT 1),1,1),
-  (2,'2026年度高新技术企业申报','https://kjj.wuhu.gov.cn/_res/images/gai.png',
+  (2,'2026年度高新技术企业申报','/static/images/banner/banner-2.png',
       (SELECT id FROM news WHERE source_url='https://example.local/demo/2' LIMIT 1),2,1),
-  (3,'芜湖造航空发动机亮相',    'https://kjj.wuhu.gov.cn/_res/images/gai.png',
+  (3,'芜湖造航空发动机亮相',    '/static/images/banner/banner-3.png',
       (SELECT id FROM news WHERE source_url='https://example.local/demo/3' LIMIT 1),3,1)
 ON DUPLICATE KEY UPDATE `title`=VALUES(`title`), `image_url`=VALUES(`image_url`);
