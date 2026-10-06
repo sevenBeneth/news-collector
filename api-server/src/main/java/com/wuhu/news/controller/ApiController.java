@@ -6,6 +6,7 @@ import com.wuhu.news.entity.NewsCategory;
 import com.wuhu.news.service.NewsService;
 import com.wuhu.news.service.UserService;
 import com.wuhu.news.utils.AuthUtil;
+import com.wuhu.news.vo.AiSummaryVO;
 import com.wuhu.news.vo.CommentVO;
 import com.wuhu.news.vo.LoginVO;
 import com.wuhu.news.vo.NewsDetailVO;
@@ -68,6 +69,15 @@ public class ApiController {
     public NewsDetailVO detail(@RequestParam Long id,
                                @RequestParam(defaultValue = "10") Integer page_size) {
         return newsService.detail(id, page_size);
+    }
+
+    /**
+     * AI 摘要状态查询（供详情页轮询，实现“实时生成”效果）
+     * 无任何写操作，不会增加阅读数
+     */
+    @PostMapping("aiSummary")
+    public AiSummaryVO aiSummary(@RequestParam Long id) {
+        return newsService.aiSummary(id);
     }
 
     // ---------------- 评论 ----------------

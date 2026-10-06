@@ -29,6 +29,7 @@
 | `POST /api/getCategory` | 无 | 频道列表（enable=1） |
 | `POST /api/getIndex` | `category_id?` `keyword?` `page_index` `page_size` | 新闻分页列表 |
 | `POST /api/detail` | `id` `page_size` | 新闻详情（含 AI 摘要、评论首页） |
+| `POST /api/aiSummary` | `id` | **AI 摘要状态**（详情页轮询实现"实时生成"效果）。返回 `{id, ai_status, ai_summary, ai_keywords, ai_model, ai_time}`；**无写操作，不增加阅读数** |
 | `POST /api/comment` | `news_id` `page_index` `page_size` | 一级评论分页 |
 | `POST /api/commentDetail` | `id` `page_index` `page_size` | 单条评论 + 其回复分页 |
 | `POST /api/addComment` | `news_id` `content` `page_size` 🔒 | 发表评论 |
@@ -147,7 +148,7 @@
 | `POST /admin/api/source/delete` | `id` | 删除 |
 | `GET /admin/api/crawl/logs` | `page_index` `page_size` | 采集日志分页 |
 | `POST /admin/api/ai/backfill` | `limit`（默认 5） | 批量补齐 AI 摘要，返回处理条数 |
-| `POST /admin/api/ai/regenerate` | `id` | 重新生成某条摘要 |
+| `POST /admin/api/ai/regenerate` | `id` | 重新生成某条摘要。**异步**：先把 `ai_status` 置 0（前端可轮询 `POST /api/aiSummary` 看到实时生成过程）再后台调用大模型，管理端不会阻塞 |
 | `GET /admin/api/user` | `keyword?` `page_index` `page_size` | 用户列表 |
 | `POST /admin/api/user/enable` | `id` `enable` | 启用/禁用 |
 | `GET /admin/api/category` | 无 | 频道列表 |

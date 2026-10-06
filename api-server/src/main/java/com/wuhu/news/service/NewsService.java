@@ -6,6 +6,7 @@ import com.wuhu.news.entity.*;
 import com.wuhu.news.mapper.*;
 import com.wuhu.news.utils.AuthUtil;
 import com.wuhu.news.utils.SensitiveWordFilter;
+import com.wuhu.news.vo.AiSummaryVO;
 import com.wuhu.news.vo.CommentVO;
 import com.wuhu.news.vo.NewsDetailVO;
 import com.wuhu.news.vo.NewsItemVO;
@@ -78,6 +79,16 @@ public class NewsService {
         detail.setComment(PageResult.of(page.getTotal(), pageSize, page.getResult()));
         newsMapper.increaseRead(id);
         return detail;
+    }
+
+    // ---------------- AI 摘要状态（前端轮询，无副作用） ----------------
+
+    public AiSummaryVO aiSummary(Long id) {
+        AiSummaryVO vo = newsMapper.selectAiSummary(id);
+        if (vo == null) {
+            throw new BasicException(SysCode.NOT_EXISTS);
+        }
+        return vo;
     }
 
     // ---------------- 评论 ----------------
