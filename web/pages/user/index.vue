@@ -52,7 +52,7 @@
 						<view class="info">
 							<view class="name">
 								<iconfont type="about"></iconfont>
-								<text>关于团节社成都邀请码</text>
+								<text>关于本平台</text>
 							</view>
 							<iconfont type="go"></iconfont>
 						</view>
@@ -94,7 +94,7 @@
 			console.log('onShow2')
 			this.$initPageTitle(); //初始化页面标题
 			// #ifdef MP
-			this.loginText = '微信登录';
+			this.loginText = '登录';
 			// #endif
 			// let cancelLogin = uni.getStorageSync('cancelLogin');
 			// console.log(cancelLogin)

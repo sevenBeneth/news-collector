@@ -89,7 +89,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "修改为自己的ID",
+        "appid" : "",
         "setting" : {
             "urlCheck" : true,
             "minified" : true,

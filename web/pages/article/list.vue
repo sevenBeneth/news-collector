@@ -138,7 +138,7 @@ export default {
 		return {
 			path: '/pages/article/index',
 			success: function(e) {},
-			title: '团节社成都'
+			title: '芜湖市科技创新新闻收集平台'
 		};
 	},
 	onLoad(e) {
