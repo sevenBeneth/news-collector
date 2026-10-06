@@ -45,6 +45,9 @@ pagehelper:
 app:
   # 采集端调用 /api/ingest/** 所需的令牌
   ingest-token: wuhu-ingest-2026
+  # 轮播图输出目录（相对后端工作目录；管理端"一键生成轮播图"写入此处）
+  banner:
+    dir: ../web/static/images/banner
   admin:
     mobile: 13800000001
     password: admin123

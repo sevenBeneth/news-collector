@@ -87,7 +87,6 @@ news-collector/
 │   ├── 信息架构.md                 产品信息架构（思维导图版）
 │   ├── 录屏脚本.md                 演示视频脚本
 │   └── 插件与来源说明.md           插件来源 + 编写比例
-├── tools/mvn-settings.xml          本机 Maven 配置修正
 └── README.md
 ```
 
@@ -125,7 +124,7 @@ ai:
 
 ```bash
 cd D:/news-collector/api-server
-mvn -s ../tools/mvn-settings.xml -DskipTests clean package
+mvn -DskipTests clean package
 java -jar target/news-collector-1.0.jar
 ```
 
@@ -194,24 +193,25 @@ python run.py                            # 全量采集并入库（自动触发 
 
 首页轮播图不是手写贴图，而是**由数据库标题驱动自动生成**，与滑动框比例严格一致（750:320 = 2.34375:1，输出 2 倍图 1500×640）。
 
-```bash
-python tools/gen_banners.py                 # 读取后端 banner 接口 → 生成全部启用轮播
-python tools/gen_banners.py --ids 1,3       # 只生成指定轮播
-python tools/gen_banners.py --dry-run       # 只打印排版结果，不写文件
-python tools/gen_banners.py --update-api    # 生成后回写 banner.image_url
-python tools/gen_banners.py --title-only    # 只用 banner 标题（默认取关联新闻标题）
+**管理端一键生成（推荐）**：进入「轮播管理」→ 点 **一键生成轮播图** → 后端用 Java2D 按数据库标题重新绘制全部启用中的轮播，并自动回写 `banner.image_url`。无需安装 Python、不依赖任何外部脚本。
+
+```
+POST /admin/api/banner/regenerate          # 重做全部启用中的轮播
+POST /admin/api/banner/regenerate?id=3     # 只重做某一条
 ```
 
 生成逻辑：
 
 | 环节 | 说明 |
 |---|---|
-| 取数 | `POST /api/banner` 取轮播列表 → 有关联新闻再取 `POST /api/detail` 拿标题/来源/时间/频道/AI关键词 |
+| 取数 | 读 `banner` 表 → 有关联新闻再取新闻详情，拿到标题/来源/时间/频道/AI关键词 |
 | 标题 | 默认用关联新闻标题（信息量更大），**按像素宽度自动折行**（最多 3 行），字号从 78 自适应降到 54 |
 | 副标题 | 频道名 + AI 关键词（自动去重、超宽省略） |
 | 来源行 | `来源：xxx · 发布日期 · 摘要：deepseek-chat`（演示种子数据 `demo-seed` 不展示） |
 | 配色 | 按频道取色（政策=红、平台=紫、企业=蓝、园区=绿、成果转化=青、人才=橙…） |
 | 版式 | 左侧文案 + 右侧科技感圆环装饰 + 右上"AI 实时摘要"徽标 + 左上平台名 |
+| 输出目录 | `app.banner.dir`（默认 `../web/static/images/banner`，相对后端工作目录） |
+| 字体 | 自动挑选可显示中文的字体族（Windows 微软雅黑 / Linux Noto CJK / 文泉驿），无中文字体时日志告警 |
 
 > 抓取到的新闻封面多为 220×150 的列表缩略图，比例与轮播框不符、铺满会裁切，因此轮播统一用本脚本生成。
 

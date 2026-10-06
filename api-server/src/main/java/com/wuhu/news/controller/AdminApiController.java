@@ -129,6 +129,17 @@ public class AdminApiController {
         return adminService.deleteBanner(id);
     }
 
+    /**
+     * 一键生成轮播图：按数据库标题用 Java2D 绘制 1500×640 横幅并回写 image_url
+     * 传 id 只重做一条；不传则重做全部启用中的轮播
+     */
+    @PostMapping("banner/regenerate")
+    public java.util.Map<String, Object> bannerRegenerate(HttpServletRequest request,
+                                                          @RequestParam(required = false) Long id) {
+        requireAdmin(request);
+        return adminService.regenerateBannerImages(id);
+    }
+
     // ---------------- 采集源 ----------------
 
     @GetMapping("source")

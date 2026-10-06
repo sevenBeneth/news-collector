@@ -143,6 +143,7 @@
 | `GET /admin/api/banner` | 无 | 轮播列表 |
 | `POST /admin/api/banner/save` | `id?` `title` `image_url` `link_url` `news_id` `sort` `enable` | 新增/编辑 |
 | `POST /admin/api/banner/delete` | `id` | 删除 |
+| `POST /admin/api/banner/regenerate` | `id?` | **一键生成轮播图**：后端用 Java2D 按数据库标题绘制 1500×640 横幅（比例与滑动框一致）并回写 `image_url`；不传 `id` 则重做全部启用中的轮播。返回 `{total, success, skipped, messages}` |
 | `GET /admin/api/source` | 无 | 采集源列表（含 last_crawl_time） |
 | `POST /admin/api/source/save` | `id?` `name` `adapter` `list_url` `default_category_code` `keyword_filter` `max_pages` `enable` `sort` `remark` | 新增/编辑 |
 | `POST /admin/api/source/delete` | `id` | 删除 |

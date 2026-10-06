@@ -929,7 +929,10 @@ async function loadBanner() {
   box.innerHTML =
     '<div class="panel">' +
       '<div class="panel-head"><h3>轮播列表</h3>' +
-        '<button class="btn btn-primary btn-sm" data-action="banner-add">新增轮播</button></div>' +
+        '<span>' +
+          '<button class="btn btn-sm" data-action="banner-regen">一键生成轮播图</button> ' +
+          '<button class="btn btn-primary btn-sm" data-action="banner-add">新增轮播</button>' +
+        '</span></div>' +
       '<div class="table-wrap"><table>' +
         '<thead><tr><th>ID</th><th>标题</th><th>图片 URL</th><th>跳转链接</th>' +
         '<th>关联新闻ID</th><th>排序</th><th>状态</th><th>操作</th></tr></thead><tbody>' +
@@ -1303,6 +1306,22 @@ async function onAction(btn) {
         // POST /admin/api/banner/delete  id
         return api('POST', '/admin/api/banner/delete', { id: id });
       }, loadBanner);
+      break;
+
+    case 'banner-regen':
+      await writeOp('将按数据库标题重新绘制全部启用中的轮播图（1500×640，与滑动框同比例），确定继续？', function () {
+        // POST /admin/api/banner/regenerate
+        return api('POST', '/admin/api/banner/regenerate', {}, { query: true });
+      }, async function (data) {
+        let msg = '生成完成';
+        if (data && typeof data === 'object') {
+          msg = '成功 ' + (data.success || 0) + ' 张';
+          if (data.skipped) msg += '，跳过 ' + data.skipped + ' 张（未启用）';
+          if (data.messages && data.messages.length) msg += '\n' + data.messages.join('\n');
+        }
+        alert(msg);
+        await loadBanner();
+      });
       break;
 
     /* ---------- 采集源 ---------- */

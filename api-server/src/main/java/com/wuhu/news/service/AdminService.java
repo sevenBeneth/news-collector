@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.wuhu.news.entity.*;
 import com.wuhu.news.mapper.*;
+import com.wuhu.news.vo.NewsDetailVO;
 import com.wuhu.news.vo.PageResult;
 import com.wuhu.news.vo.StatVO;
 import lombok.extern.slf4j.Slf4j;
@@ -11,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 管理端服务：新闻审核发布、轮播、采集源、日志、用户
@@ -38,6 +43,8 @@ public class AdminService {
     private CommentMapper commentMapper;
     @Autowired
     private AiService aiService;
+    @Autowired
+    private BannerImageService bannerImageService;
 
     // ---------------- 看板 ----------------
 
@@ -184,6 +191,49 @@ public class AdminService {
     public Integer deleteBanner(Long id) {
         bannerMapper.deleteByPrimaryKey(id);
         return 0;
+    }
+
+    /**
+     * 一键生成轮播图（管理端按钮触发）
+     * 用 Java2D 按数据库里的标题绘制 1500×640 横幅（比例与前端滑动框一致），
+     * 并把生成的图片地址回写 banner.image_url。
+     *
+     * @param id 传 id 只重做一条；为 null 时重做全部启用中的轮播
+     */
+    public Map<String, Object> regenerateBannerImages(Long id) {
+        List<Banner> list;
+        if (id == null) {
+            list = bannerMapper.selectAllOrdered();
+        } else {
+            Banner one = bannerMapper.selectByPrimaryKey(id);
+            list = one == null ? new ArrayList<Banner>() : Collections.singletonList(one);
+        }
+        int success = 0;
+        int skipped = 0;
+        List<String> messages = new ArrayList<>();
+        for (Banner b : list) {
+            if (b.getEnable() != null && b.getEnable() == 0) {
+                skipped++;
+                messages.add("跳过未启用：" + b.getTitle());
+                continue;
+            }
+            try {
+                NewsDetailVO news = b.getNews_id() == null ? null : newsMapper.selectDetail(b.getNews_id(), null);
+                String url = bannerImageService.render(b, news);
+                bannerMapper.updateImageUrl(b.getId(), url);
+                success++;
+            } catch (Exception e) {
+                log.warn("生成轮播图失败 id={} : {}", b.getId(), e.getMessage());
+                messages.add("失败 id=" + b.getId() + "：" + e.getMessage());
+            }
+        }
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("total", list.size());
+        result.put("success", success);
+        result.put("skipped", skipped);
+        result.put("messages", messages);
+        log.info("轮播图生成完成：{}", result);
+        return result;
     }
 
     // ---------------- 采集源 ----------------
