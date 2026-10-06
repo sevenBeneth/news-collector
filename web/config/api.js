@@ -18,6 +18,8 @@ let api = {
 		index: apiRoot + 'getIndex',
 		category: apiRoot + 'getCategory',
 		detail: apiRoot + 'detail',
+		// AI 摘要状态（详情页实时生成轮询，无副作用）
+		aiSummary: apiRoot + 'aiSummary',
 		comment: apiRoot + 'comment',
 		commentDetail: apiRoot + 'commentDetail',
 		commentLike: apiRoot + 'commentLike',

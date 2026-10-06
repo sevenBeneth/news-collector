@@ -93,4 +93,12 @@ public interface NewsMapper extends MyBaseMapper<News> {
     /** 自动归档频道 */
     @Update("update news set category_id = #{categoryId} where id = #{id}")
     int updateCategory(@Param("id") Long id, @Param("categoryId") Long categoryId);
+
+    /** 查询 AI 摘要状态（前端轮询用，无任何写操作） */
+    @Select("select id, ai_status, ai_summary, ai_keywords, ai_model, ai_time from news where id = #{id}")
+    com.wuhu.news.vo.AiSummaryVO selectAiSummary(@Param("id") Long id);
+
+    /** 标记为“生成中”，前端据此展示实时生成效果 */
+    @Update("update news set ai_status = 0, ai_summary = null, ai_keywords = null, ai_model = null, ai_tokens = 0, ai_time = null where id = #{id}")
+    int markAiGenerating(@Param("id") Long id);
 }

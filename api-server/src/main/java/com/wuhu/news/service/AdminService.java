@@ -139,11 +139,19 @@ public class AdminService {
         return 0;
     }
 
+    /**
+     * 重新生成 AI 摘要。
+     * 先把记录标记为“生成中”，再异步调用大模型：
+     *  - 管理端不会被大模型耗时阻塞
+     *  - 小程序/H5 详情页可轮询 /api/aiSummary 展示“实时生成”过程
+     */
     public Integer regenerateAi(Long id) {
         News news = newsMapper.selectByPrimaryKey(id);
-        if (news != null) {
-            aiService.summarize(news);
+        if (news == null) {
+            throw new BasicException(SysCode.NOT_EXISTS);
         }
+        newsMapper.markAiGenerating(id);
+        aiService.summarizeAsync(id);
         return 0;
     }
 

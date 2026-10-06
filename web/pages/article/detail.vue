@@ -15,9 +15,10 @@
 					<text class="origin-text">查看原文</text>
 					<text class="origin-arrow">></text>
 				</view>
-				<!-- AI 摘要卡片 -->
+				<!-- AI 摘要卡片：开启实时生成（摘要未生成时轮询后端，生成后逐字输出） -->
 				<view class="ai-summary">
-					<aiSummaryCard :summary="info.ai_summary" :keywords="info.ai_keywords" :model="info.ai_model" />
+					<aiSummaryCard :summary="info.ai_summary" :keywords="info.ai_keywords" :model="info.ai_model"
+						:news-id="info.id" live />
 				</view>
 				<view class="desc"><parser :html="info.content"></parser></view>
 				<view class="declaration" v-if="hasSourceUrl">

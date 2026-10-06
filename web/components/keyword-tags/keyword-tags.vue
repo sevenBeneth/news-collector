@@ -1,6 +1,8 @@
 <template>
 	<view class="keyword-tags" v-if="tagList.length > 0">
-		<view class="keyword-tags__item" :class="'keyword-tags__item--' + size" v-for="(item, index) in tagList" :key="index">
+		<view class="keyword-tags__item" :class="['keyword-tags__item--' + size, { 'is-anim': animated }]"
+			:style="animated ? ('animation-delay:' + (index * 70) + 'ms') : ''"
+			v-for="(item, index) in tagList" :key="index">
 			{{ item }}
 		</view>
 	</view>
@@ -19,6 +21,11 @@ export default {
 		size: {
 			type: String,
 			default: 'normal'
+		},
+		// 是否逐个渐入（AI 摘要卡片生成完成时使用）
+		animated: {
+			type: Boolean,
+			default: false
 		}
 	},
 	computed: {
@@ -51,6 +58,11 @@ export default {
 </script>
 
 <style lang="scss">
+@keyframes kwSlideUp {
+	from { opacity: 0; transform: translateY(10rpx) scale(0.96); }
+	to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .keyword-tags {
 	display: flex;
 	flex-direction: row;
@@ -63,6 +75,12 @@ export default {
 		color: #c62828;
 		background: rgba(198, 40, 40, 0.08);
 		white-space: nowrap;
+
+		/* 逐个渐入：动画延迟由父组件传入 */
+		&.is-anim {
+			opacity: 0;
+			animation: kwSlideUp 0.34s ease-out both;
+		}
 
 		&--normal {
 			padding: 6rpx 20rpx;
